@@ -32,11 +32,11 @@ using namespace std;
 #define BUFF_SIZE               5*1024          //domain-address map size
 #define DEFAULT_SERVER_PORT     12880           //default port
 #define IPV6_ADDR_MAX_LEN       50
-#define DEFAULT_TRANSFER_KEY    "tiansi"
+#define DEFAULT_TRANSFER_KEY    "tiansi"        //default key
 #define MAPS_FILE_PATH          "./maps.dat"
 
 #ifdef _WIN32
-#define HOSTS_FILE_PATH         "C:/Windows/System32/drivers/etc/hosts"       //just for test
+#define HOSTS_FILE_PATH         "C:/Windows/System32/drivers/etc/hosts"      
 #else
 #define HOSTS_FILE_PATH         "/etc/hosts" 
 #endif // _WIN32
@@ -274,13 +274,16 @@ int getAddr6(char* pAddr6) {
             ZeroMemory(pAddr6, IPV6_ADDR_MAX_LEN);
             sinp6 = (struct sockaddr_in6 *)ifap->ifa_addr;
             inet_ntop(AF_INET6, &sinp6->sin6_addr, pAddr6, IPV6_ADDR_MAX_LEN);
-            //实际环境注释下面两行
+
+            //The following two lines need to be annotated when running in the real environment.
             /*if (strncmp(pAddr6, "::", 2) == 0)
                 continue;*/
-            //实际环境中解除以下注释以筛选有效ip
-            
+
+            //Delete annotation of the following two lines to filter the invalid ipv6 address
+            //when running in the real environment.   
             if (strncmp(pAddr6, "fe80", 4) == 0 || strlen(pAddr6) < 15)
                 continue;
+
             return 1;
         }    
     }
@@ -530,14 +533,17 @@ void runGetClient(const char *pSAddress, const u_short port, const char *key) {
 
 
 
-int resolveOpt(int argc, char *argv[], bool *pServer, bool *pUClient, bool *pGClient,
+int resolveOpt(int argc, char *argv[],bool *pHelp, bool *pServer, bool *pUClient, bool *pGClient,
     u_short *pPort, char *pCDomain, char *pSAddress, char *pKey)
 {
     int opt;
-    const char *optstring = "sp:ud:ga:k:";
+    const char *optstring = "sp:ud:ga:k:h";
 
     while ((opt = getopt(argc, argv, optstring)) != -1) {
         switch (opt) {
+        case 'h':
+            *pHelp = true;
+            return 1;
         case 's':
             *pServer = true;
             break;
@@ -629,9 +635,11 @@ void start(const bool server, const bool uClient, const bool gClient,
 */
 int main(int argc, char *argv[])
 {
+    bool help = false;
     bool server = false;
     bool uClient = false;
     bool gClient = false;
+
 
     u_short port = DEFAULT_SERVER_PORT;
     char cDomain[100] = { '\0' };
@@ -640,8 +648,24 @@ int main(int argc, char *argv[])
 
     initSock();
 
-    if (!resolveOpt(argc, argv, &server, &uClient, &gClient, &port, cDomain, sAddress, key)) 
+    if (!resolveOpt(argc, argv,&help, &server, &uClient, &gClient, &port, cDomain, sAddress, key)) 
         return 0;  
+
+    if (help) {
+        cout << "Server:" << endl;
+        cout << "-s: run as a server"<<endl;
+        cout << "Upload - client:" << endl;
+        cout << "-u: run as update client." << endl;
+        cout << "-d: set client virtual domain name, like : \"example.test.com\"." << endl;
+        cout << "Download - client :" << endl;
+        cout << "-g: run as get client." << endl;
+        cout << "Other param：" << endl;
+        cout << "-p: server port, if you didn't set a port, it will use the default " << endl;
+        cout << "    port 12880, be sure it's accessible!" << endl;
+        cout << "-a: set server address when run as a client." << endl;
+        cout << "-k: set a key, if you didn't set a key, it will use the default key!" << endl;
+        return 1;
+    }
 
     start(server, uClient, gClient, port, cDomain, sAddress, key);
 

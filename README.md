@@ -16,12 +16,10 @@ When you have an externally accessible ipv6 address, but the address is not fixe
 ## Steps:
 1. Cloning project  
 `git clone `  
-
 2. Compile:  
 `cd addrmapper/addrmapper`  
 `g++ addrmapper.cpp -o addrmapper`  
 `chmod +x addrmapper`  
-
 3. Server-side:  
 `./addrmapper [-s] [-p port] [-k key]`  
 **if you didn't input any arg of '-s', '-u', '-g', it will run as server by default.**  
@@ -30,15 +28,22 @@ Upload-client side:
 Download-client side:  
 `./addrmapper -g -a server_addr [-p port] [-k key]`  
 
+
+
+**PS: You can use crontab to set a schedule task.**
+
+
+
 ## arguments
+
 1. Server:  
-  -s: run as a server
+    -s: run as a server
 2. Upload-client:  
-  -u: run as update client.  
-  -d: set client virtual domain name, like: "example.test.com".  
+    -u: run as update client.  
+    -d: set client virtual domain name, like: "example.test.com".  
 3. Download-client:  
-  -g: run as get client.      
+    -g: run as get client.      
 4. Other param：  
-  -p: server port, if you didn't set a port, it will use the default port 12880, be sure it's accessible!  
-  -a: set server address when run as a client.  
-  -k: set a key, if you didn't set a key, it will use the default key!   
+    -p: server port, if you didn't set a port, it will use the default port 12880, be sure it's accessible!  
+    -a: set server address when run as a client.  
+    -k: set a key, if you didn't set a key, it will use the default key!  
