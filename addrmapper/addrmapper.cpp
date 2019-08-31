@@ -270,12 +270,12 @@ int getAddr6(char* pAddr6) {
             sinp6 = (struct sockaddr_in6 *)ifap->ifa_addr;
             inet_ntop(AF_INET6, &sinp6->sin6_addr, pAddr6, IPV6_ADDR_MAX_LEN);
             //实际环境注释下面两行
-            if (strncmp(pAddr6, "::", 2) == 0)
-                continue;
+            /*if (strncmp(pAddr6, "::", 2) == 0)
+                continue;*/
             //实际环境中解除以下注释以筛选有效ip
             
-            /*if (strncmp(pAddr6, "fe80", 4) == 0 || strlen(pAddr6) < 15)
-                continue;*/
+            if (strncmp(pAddr6, "fe80", 4) == 0 || strlen(pAddr6) < 15)
+                continue;
             return 1;
         }    
     }
