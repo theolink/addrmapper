@@ -180,9 +180,9 @@ void writeHosts(vector<string> maps) {
     {
         vector<string> subStr = split(line, ' ');
 #ifdef _WIN32
-        if (subStr.size() > 0 && subStr.at(0) == firstDomain) {
+        if (subStr.size() > 1 && subStr.at(0) == firstDomain) {
 #else
-        if (subStr.size() > 0 && subStr.at(1) == firstDomain) {
+        if (subStr.size() > 1 && subStr.at(1) == firstDomain) {
 #endif // _WIN32
 
             flag = false;
