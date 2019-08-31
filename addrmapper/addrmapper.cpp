@@ -179,7 +179,12 @@ void writeHosts(vector<string> maps) {
     while (in.getline(line, 1024))
     {
         vector<string> subStr = split(line, ' ');
+#ifdef _WIN32
         if (subStr.size() > 0 && subStr.at(0) == firstDomain) {
+#else
+        if (subStr.size() > 0 && subStr.at(1) == firstDomain) {
+#endif // _WIN32
+
             flag = false;
             vector<string>::iterator it = maps.begin();
             for (; it != maps.end(); ++it) {
